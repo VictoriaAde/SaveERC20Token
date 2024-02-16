@@ -86,5 +86,22 @@ describe("Contract cases", function () {
       const tx = saveERC20.withdraw(200);
       await expect(tx).to.be.revertedWith("insufficient funds");
     });
+    it("Should return valid amount remaining as user's balance after withdrawal", async function () {
+      const { saveERC20, token, owner } = await loadFixture(
+        deployContractsInstances
+      );
+      await token.approve(saveERC20.target, 100);
+      await saveERC20.deposit(100);
+      await saveERC20.withdraw(50);
+      const finalBal = await saveERC20.checkUserBalance(owner);
+      expect(finalBal).to.equal(50);
+    });
+    it("Should emit after successful withdrawal", async function () {
+      const { saveERC20, token } = await loadFixture(deployContractsInstances);
+      await token.approve(saveERC20.target, 200);
+      await saveERC20.deposit(100);
+      const tx = await saveERC20.withdraw(20);
+      expect(tx).to.emit;
+    });
   });
 });
