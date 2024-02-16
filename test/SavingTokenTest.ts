@@ -69,4 +69,22 @@ describe("Contract cases", function () {
     const tx = saveERC20.deposit(1000);
     expect(tx).to.be.revertedWithCustomError;
   });
+
+  describe("Withdraw", function () {
+    it("Should pass with rejected, when attempted to withdraw amount equal 0", async function () {
+      const { saveERC20, token } = await loadFixture(deployContractsInstances);
+      await token.approve(saveERC20.target, 100);
+      await saveERC20.deposit(100);
+      const tx = saveERC20.withdraw(0);
+      await expect(tx).to.be.rejectedWith("can't withdraw zero value");
+    });
+
+    it("Should pass with rejected, when attempted to withdraw amount above what was deposited", async function () {
+      const { saveERC20, token } = await loadFixture(deployContractsInstances);
+      await token.approve(saveERC20.target, 100);
+      await saveERC20.deposit(100);
+      const tx = saveERC20.withdraw(200);
+      await expect(tx).to.be.revertedWith("insufficient funds");
+    });
+  });
 });
