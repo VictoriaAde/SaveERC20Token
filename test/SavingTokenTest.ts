@@ -52,4 +52,12 @@ describe("Contract cases", function () {
       expect(tx).to.emit;
     });
   });
+
+  it("Should increase contract's balance on safe deposit", async function () {
+    const { saveERC20, token } = await loadFixture(deployContractsInstances);
+    await token.approve(saveERC20.target, 100);
+    await saveERC20.deposit(50);
+    const bal = await saveERC20.checkContractBalance();
+    expect(bal).to.equal(50);
+  });
 });
