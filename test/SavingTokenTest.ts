@@ -27,4 +27,29 @@ describe("Contract cases", function () {
       expect(saveERC20).to.exist;
     });
   });
+
+  describe("Deposit", function () {
+    it("Should pass with revertedWith, when attempted to deposit with amount equal 0", async function () {
+      const { saveERC20 } = await loadFixture(deployContractsInstances);
+      const tx = saveERC20.deposit(0);
+      await expect(tx).to.be.revertedWith("can't save zero value");
+    });
+
+    it("Should pass with revertedWithCustomError from KOVACToken, when attempted to deposit without approval to spend token or having token type", async function () {
+      const { saveERC20 } = await loadFixture(deployContractsInstances);
+      const tx = saveERC20.deposit(100);
+      //  ERC20InsufficientAllowance
+      expect(tx).to.be.revertedWithCustomError;
+    });
+
+    it("Should pass an emit after successful transaction", async function () {
+      const { saveERC20, token } = await loadFixture(deployContractsInstances);
+      await token.approve(saveERC20.target, 100);
+      console.log(saveERC20.target);
+
+      const tx = saveERC20.deposit(100);
+
+      expect(tx).to.emit;
+    });
+  });
 });
